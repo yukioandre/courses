@@ -106,7 +106,6 @@ tree.fit(train_features, train_labels)
 # Predict the labels for the test data
 pred_labels_tree = tree.predict(test_features)
 
-
 # Although our tree's performance is decent, it's a bad idea to immediately assume that it's therefore the perfect tool for this job -- there's always the possibility of other models that will perform even better! It's always a worthwhile idea to at least test a few other algorithms and find the one that's best for our data.
 # Sometimes simplest is best, and so we will start by applying logistic regression. Logistic regression makes use of what's called the logistic function to calculate the odds that a given data point belongs to a given class. Once we have both models, we can compare them on a few performance metrics, such as false positive and false negative rate (or how many points are inaccurately classified).
 
@@ -132,7 +131,7 @@ pred_labels_tree = tree.predict(test_features)
 from sklearn.linear_model import LogisticRegression
 
 # Train our logistic regression and predict labels for the test set
-logreg = LogisticRegression(random_state=10)
+logreg = LogisticRegression()
 logreg.fit(train_features, train_labels)
 pred_labels_logit = logreg.predict(test_features)
 
@@ -172,43 +171,27 @@ train_features, test_features, train_labels, test_labels = train_test_split(pca_
 # We've now balanced our dataset, but in doing so, we've removed a lot of data points that might have been crucial to training our models. Let's test to see if balancing our data improves model bias towards the "Rock" classification while retaining overall classification performance.
 # Note that we have already reduced the size of our dataset and will go forward without applying any dimensionality reduction. In practice, we would consider dimensionality reduction more rigorously when dealing with vastly large datasets and when computation times become prohibitively large.
 
-# Train our decision tree on the balanced data
-tree = DecisionTreeClassifier(random_state=10)
-tree.fit(train_features, train_labels)
-pred_labels_tree = tree.predict(test_features)
-
-# Train our logistic regression on the balanced data
-logreg = LogisticRegression(random_state = 10)
-logreg.fit(train_features, train_labels)
-pred_labels_logit = logreg.predict(test_features)
-
-# Compare the models
-print("Decision Tree: \n", classification_report(test_labels, pred_labels_tree))
-print("Logistic Regression: \n", classification_report(test_labels, pred_labels_logit))
 
 
-# Success! Balancing our data has removed bias towards the more prevalent class. To get a good sense of how well our models are actually performing, we can apply what's called cross-validation (CV). This step allows us to compare models in a more rigorous fashion.
-# Since the way our data is split into train and test sets can impact model performance, CV attempts to split the data multiple ways and test the model on each of the splits. Although there are many different CV methods, all with their own advantages and disadvantages, we will use what's known as K-fold CV here. K-fold first splits the data into K different, equally sized subsets. Then, it iteratively uses each subset as a test set while using the remainder of the data as train sets. Finally, we can then aggregate the results from each fold for a final model performance score.
 
-from sklearn.model_selection import KFold, cross_val_score
-
-# Set up our K-fold cross-validation
-kf = KFold(10)
-
-tree = DecisionTreeClassifier(random_state=10)
-logreg = LogisticRegression(random_state=10)
-
-# Train our models using KFold cv
-tree_score = cross_val_score(tree, pca_projection, labels, cv=kf)
-logit_score = cross_val_score(logreg, pca_projection, labels, cv=kf)
-
-# Print the mean of each array o scores
-print("Decision Tree:", np.mean(tree_score), "Logistic Regression:", np.mean(logit_score))
 
 
 ##########################################################################################
 ##########################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
 
 # LINKS ADICIONAIS INTERESSANTES:
+# RESOLUÇÃO COM PIPELINE: https://medium.com/@rute.s.abreu/using-pipeline-to-solve-datacamp-project-classify-song-genres-from-audio-data-7cde85faa4d1
 # UM POUCO DA MATEMATICA DO PCA: https://medium.com/@sercandogan/why-scree-plot-is-important-in-pca-a66cd7dcd624
 # RESOLUCAO DE OUTRO ALUNO: https://nbviewer.jupyter.org/github/kayveen/Classify-Song-Genres-from-Audio-Data/blob/master/notebook.ipynb
